@@ -20,6 +20,9 @@ USER_TWO = {
 
 
 LAST_KEY = []
+STATUS = {
+    "logged_in": 0
+}
 
 
 mqtt_client = mqtt.Client()
@@ -76,11 +79,13 @@ async def keyless_handler(request):
         if str(identity) == USER_ONE['identity'] and str(sequence) == USER_ONE['sequence']:
             mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
             LAST_KEY.append(identity)
+            STATUS['logged_in'] = 1
             return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
 
         if str(identity) == USER_TWO['identity'] and str(sequence) == USER_TWO['sequence']:
             mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
             LAST_KEY.append(identity)
+            STATUS['logged_in'] = 1
             return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
 
 
@@ -123,14 +128,14 @@ async def logout_handler(request):
 
         if str(identity) == USER_ONE['identity'] and str(sequence) == USER_ONE['sequence']:
             mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
-            LAST_KEY.clear()
             LAST_KEY.append(identity)
+            STATUS['logged_in'] = 0
             return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
 
         if str(identity) == USER_TWO['identity'] and str(sequence) == USER_TWO['sequence']:
             mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
-            LAST_KEY.clear()
             LAST_KEY.append(identity)
+            STATUS['logged_in'] = 0
             return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
 
 
