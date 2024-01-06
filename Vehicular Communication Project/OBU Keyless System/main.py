@@ -109,10 +109,18 @@ async def driver_handler(request):
     return web.json_response({'error': 'unauthorized'}, status=200)
 
 
+async def logout_handler(request):
+    """
+    Http handler function for /logout get route
+    """
+    LAST_KEY.clear()
+    return web.json_response({'message': 'Logout successful'}, status=200)
+
 
 httpServer = web.Application()
 httpServer.router.add_post('/keyless', keyless_handler)
 httpServer.router.add_get('/driver', driver_handler)
+httpServer.router.add_post('/logout', logout_handler)
 
 
 
