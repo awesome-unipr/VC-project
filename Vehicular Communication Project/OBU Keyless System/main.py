@@ -6,6 +6,16 @@ MQTT_BROKER = 'test.mosquitto.org'
 MQTT_PORT = 1883
 MQTT_TOPIC = 'vc2023/key-is-ok'
 
+USER_ONE = {
+    "identity": 1,
+    "sequence": 'cab9896c54dccd51550e9b107e5bb7a5b8b1060c43476b9aa8fba68543e736fd',
+}
+
+USER_TWO = {
+    "identity": 2,
+    "sequence": '4cd9922cd6e3b75f3e5122a3d01318d531051fcd29d8579125409f6899f95107',
+}
+
 mqtt_client = mqtt.Client()
 
 def on_connect(client, userdata, flags, rc):
@@ -70,6 +80,8 @@ httpServer.router.add_get('/driver', driver_handler)
 
 
 if __name__ == '__main__':
+    print(USER_ONE)
+    print(USER_TWO)
     mqtt_client.connect(MQTT_BROKER, MQTT_PORT)
     mqtt_client.loop_start()
     web.run_app(httpServer, port=HTTP_PORT)
