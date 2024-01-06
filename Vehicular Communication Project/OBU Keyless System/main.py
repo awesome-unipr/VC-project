@@ -112,9 +112,33 @@ async def driver_handler(request):
 async def logout_handler(request):
     """
     Http handler function for /logout get route
+
+    Check if the user is authorized to logout
+    and clear the LAST_KEY 
     """
-    LAST_KEY.clear()
-    return web.json_response({'message': 'Logout successful'}, status=200)
+    try:
+        data = await request.json()
+        identity = data.get('identity')
+        sequence = data.get('sequence')
+
+        if str(identity) == USER_ONE['identity'] and str(sequence) == USER_ONE['sequence']:
+            mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
+            LAST_KEY.clear()
+            LAST_KEY.append(identity)
+            return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
+
+        if str(identity) == USER_TWO['identity'] and str(sequence) == USER_TWO['sequence']:
+            mqtt_client.publish(MQTT_TOPIC, 'VALID KEY: ' + str(identity))
+            LAST_KEY.clear()
+            LAST_KEY.append(identity)
+            return web.json_response({'message': 'VALID KEY: ' + str(identity)}, status=200)
+
+
+        LAST_KEY.append("INVALID")
+        return web.json_response({'error': 'Invalid key'}, status=401)
+
+    except json.JSONDecodeError:
+        return web.json_response({'error': 'Invalid json'}, status=400)
 
 
 httpServer = web.Application()
