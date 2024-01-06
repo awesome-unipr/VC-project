@@ -108,7 +108,10 @@ async def driver_handler(request):
         return web.json_response({'error': 'No available latest access'}, status=200)
 
     if LAST_KEY[-1] in [USER_ONE['identity'], USER_TWO['identity']]:
-        return web.json_response({'message': 'Last identity: ' + str(LAST_KEY[-1])}, status=200)
+        return web.json_response({
+            'message': 'Last identity: ' + str(LAST_KEY[-1]),
+            'status': STATUS['logged_in']
+        }, status=200)
 
 
     return web.json_response({'error': 'unauthorized'}, status=200)
