@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import aiohttp
 
+
 class MqttClient:
     def __init__(self, host, port):
         self.client = mqtt.Client()
@@ -19,9 +20,8 @@ class MqttClient:
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code " + str(rc))
-    
-    def on_message(self, client, userdata, msg):
 
+    def on_message(self, client, userdata, msg):
         match msg.topic:
             case "vc2324/alert/brake":
                 if msg.payload.decode() == "Alert":
@@ -37,8 +37,8 @@ class MqttClient:
     def subscribe(self, topic):
         self.client.subscribe(topic)
         print("Subscribed to " + topic)
-    
-    def publish(self,topic, message):
+
+    def publish(self, topic, message):
         self.client.publish(topic, message)
 
     def start(self):
@@ -60,13 +60,16 @@ class BrakingHandler:
 
     def key_unconfirmed(self):
         print("Key unrecognize")
-        self._mqtt_client.publish("vc2324/alert/key-not-recognized", "KEY NOT RECOGNIZED")
+        self._mqtt_client.publish(
+            "vc2324/alert/key-not-recognized", "KEY NOT RECOGNIZED"
+        )
         self._status = "operative, alert detected, key not recognized"
-            
+
     def display_status(self):
         return self._status
 
-mqtt_client = MqttClient('192.168.1.10', 1883)
+
+mqtt_client = MqttClient("192.168.1.10", 1883)
 braking_handler = BrakingHandler(mqtt_client)
 
 mqtt_client.subscribe("vc2324/alert/brake")
@@ -74,4 +77,4 @@ mqtt_client.subscribe("vc2324/alert/key-not-recognized")
 mqtt_client.subscribe("vc2324/key-is-ok")
 mqtt_client.start()
 
-#mqtt_client.stop()
+# mqtt_client.stop()
