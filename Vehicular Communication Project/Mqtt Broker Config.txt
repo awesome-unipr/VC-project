@@ -1,0 +1,4 @@
+1-Install Mosquitto https://mosquitto.org/download/
+2-Start Mosquitto Broker in your windows sercices
+3-Check if it is LISTENING on 127.0.0.1:1883 by writing 'netstat -a' on the command prompt
+4-Connect your mqtt client to the host and port above in your program

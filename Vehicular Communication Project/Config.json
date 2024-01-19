@@ -1,0 +1,48 @@
+{
+	"Obu": [
+		{
+			"name": "Infotainment System",
+			"http_port": 4201,
+			"mqtt_id": "1",
+			"mqtt_topic": ["vc2324/radio"]
+		},
+		{
+			"name": "Weather Information",
+			"http_port": 4202,
+			"mqtt_id": "2",
+			"mqtt_topic": ["vc2324/weather-current", "vc2324/weather-forecast"]
+		},
+		{
+			"name": "Driver Monitoring System",
+			"http_port": 4203,
+			"mqtt_id": "3",
+			"mqtt_topic": ["vc2324/dms"]
+		},
+		{
+			"name": "Central Unit",
+			"http_port": 4204,
+			"mqtt_id": "4",
+			"mqtt_topic": ["vc2324/radio", "vc2324/weather-current", "vc2324/weather-forecast", "vc2324/dms", "vc2324/alert/brake", "vc2324/alert/key-not-recognized", "vc2324/key-is-ok"]
+		},
+		{
+			"name": "Braking System",
+			"http_port": 4205,
+			"mqtt_id": "5",
+			"mqtt_topic": ["vc2324/alert/brake", "vc2324/alert/key-not-recognized", "vc2324/key-is-ok"]
+		},
+		{
+			"name": "Remote Keyless System",
+			"http_ip": "192.168.1.8",
+			"http_port": 4206,
+			"mqtt_id": "6",
+			"mqtt_topic": ["vc2324/key-is-ok"]
+		}
+	],
+	"MqttBroker": [
+		{
+			"name": "Mosquitto Broker",
+			"ip": "192.168.1.10",
+			"port": 1883
+		}
+	]
+}
