@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import aiohttp
+import json
 
 
 class MqttClient:
@@ -69,12 +70,25 @@ class BrakingHandler:
         return self._status
 
 
-mqtt_client = MqttClient("192.168.1.10", 1883)
-braking_handler = BrakingHandler(mqtt_client)
+try:
+    with open('Config.json', 'r') as file:
+        config_file = json.load(file)
 
-mqtt_client.subscribe("vc2324/alert/brake")
-mqtt_client.subscribe("vc2324/alert/key-not-recognized")
-mqtt_client.subscribe("vc2324/key-is-ok")
-mqtt_client.start()
+    for o in config_file['Obu']:
+        if o['name'] == 'Infotainment System':
+            http_server_port = o['http_port']
+            client_id = o['mqtt_id']
 
-# mqtt_client.stop()
+    for b in config_file['MqttBroker']:
+        broker_ip = b['ip']
+        broker_port = b['port']
+
+    mqtt_client = MqttClient(broker_ip, broker_port)
+    braking_handler = BrakingHandler(mqtt_client)
+
+    mqtt_client.subscribe("vc2324/alert/brake")
+    mqtt_client.subscribe("vc2324/alert/key-not-recognized")
+    mqtt_client.subscribe("vc2324/key-is-ok")
+    mqtt_client.start()
+except Exception as e:
+    raise e
