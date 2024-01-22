@@ -90,37 +90,37 @@ class DmsHandler:
         return self._current_status
 
 
-# CONFIGURATION
-with open("Config.json", "r") as file:
-    config_file = json.load(file)
+try:
+    with open("Config.json", "r") as file:
+        config_file = json.load(file)
 
-for o in config_file["Obu"]:
-    if o["name"] == "Driver Monitoring System":
-        http_server_port = o["http_port"]
-        client_id = o["mqtt_id"]
+    for o in config_file["Obu"]:
+        if o["name"] == "Driver Monitoring System":
+            http_server_port = o["http_port"]
+            client_id = o["mqtt_id"]
 
-for b in config_file["MqttBroker"]:
-    broker_ip = b["ip"]
-    broker_port = b["port"]
+    for b in config_file["MqttBroker"]:
+        broker_ip = b["ip"]
+        broker_port = b["port"]
 
-mqtt_client = MqttClient(broker_ip, broker_port, client_id)
-dms_handler = DmsHandler(mqtt_client)
-http_server = HttpServer(dms_handler, http_server_port)
+    mqtt_client = MqttClient(broker_ip, broker_port, client_id)
+    dms_handler = DmsHandler(mqtt_client)
+    http_server = HttpServer(dms_handler, http_server_port)
 
-mqtt_client.subscribe("vc2324/dms")
-mqtt_client.start()
+    mqtt_client.subscribe("vc2324/dms")
+    mqtt_client.start()
 
+    # Start the thread for changing the status
+    def change_status_thread():
+        while True:
+            dms_handler.change_status()
+            time.sleep(2)
 
-# Start the thread for changing the status
-def change_status_thread():
-    while True:
-        dms_handler.change_status()
-        time.sleep(2)
+    change_status_thread = threading.Thread(target=change_status_thread)
+    change_status_thread.start()
 
+    http_server.start()
 
-change_status_thread = threading.Thread(target=change_status_thread)
-change_status_thread.start()
-
-http_server.start()
-
-mqtt_client.stop()
+    mqtt_client.stop()
+except Exception as e:
+    raise e

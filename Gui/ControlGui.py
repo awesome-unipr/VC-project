@@ -880,25 +880,27 @@ class RemoteKeylessSystem:
             print("Error in the http request to /logout: " + str(e))
 
 
-# MAIN
-with open("Config.json", "r") as file:
-    config_file = json.load(file)
+try:
+    with open("Config.json", "r") as file:
+        config_file = json.load(file)
 
-for o in config_file["Obu"]:
-    if o["name"] == "Infotainment System":
-        info_port = o["http_port"]
-    if o["name"] == "Weather Information":
-        weather_port = o["http_port"]
-    if o["name"] == "Central Unit":
-        central_port = o["http_port"]
-    if o["name"] == "Remote Keyless System":
-        keyless_port = o["http_port"]
+    for o in config_file["Obu"]:
+        if o["name"] == "Infotainment System":
+            info_port = o["http_port"]
+        if o["name"] == "Weather Information":
+            weather_port = o["http_port"]
+        if o["name"] == "Central Unit":
+            central_port = o["http_port"]
+        if o["name"] == "Remote Keyless System":
+            keyless_port = o["http_port"]
 
-gui = TkinterGui()
-vehicle = VehicleStatus(gui, central_port, keyless_port)
-radio = InfotainmentSystem(gui, info_port)
-meteo = WeatherInformation(gui, weather_port)
-dms = DriverMonitoringSystem(gui)
-rks = RemoteKeylessSystem(gui, keyless_port)
+    gui = TkinterGui()
+    vehicle = VehicleStatus(gui, central_port, keyless_port)
+    radio = InfotainmentSystem(gui, info_port)
+    meteo = WeatherInformation(gui, weather_port)
+    dms = DriverMonitoringSystem(gui)
+    rks = RemoteKeylessSystem(gui, keyless_port)
 
-gui.start_main_loop()
+    gui.start_main_loop()
+except Exception as e:
+    raise e

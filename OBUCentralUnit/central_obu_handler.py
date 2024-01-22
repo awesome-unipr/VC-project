@@ -151,37 +151,41 @@ class CobuHandler:
         return self.status
 
 
-# MAIN
-with open("Config.json", "r") as file:
-    config_file = json.load(file)
+
+
+try:
+    with open("Config.json", "r") as file:
+        config_file = json.load(file)
 
 # BROKER SETTINGS
-for b in config_file["MqttBroker"]:
-    broker_ip = b["ip"]
-    broker_port = b["port"]
+    for b in config_file["MqttBroker"]:
+        broker_ip = b["ip"]
+        broker_port = b["port"]
 
 # HTTP SETTINGS
-for o in config_file["Obu"]:
-    if o["name"] == "Central Unit":
-        http_server_port = o["http_port"]
-        client_id = o["mqtt_id"]
+    for o in config_file["Obu"]:
+        if o["name"] == "Central Unit":
+            http_server_port = o["http_port"]
+            client_id = o["mqtt_id"]
 
 # CLASSES ISTANCES
-mqtt_client = MqttClient(broker_ip, broker_port, client_id)
-cobu_handler = CobuHandler(mqtt_client)
-http_server = HttpServer(cobu_handler, http_server_port)
+    mqtt_client = MqttClient(broker_ip, broker_port, client_id)
+    cobu_handler = CobuHandler(mqtt_client)
+    http_server = HttpServer(cobu_handler, http_server_port)
 
 # CLIENT SUBSRIPTIONS
-mqtt_client.subscribe("vc2324/radio")
-mqtt_client.subscribe("vc2324/weather-current")
-mqtt_client.subscribe("vc2324/weather-forecast")
-mqtt_client.subscribe("vc2324/dms")
-mqtt_client.subscribe("vc2324/alert/brake")
-mqtt_client.subscribe("vc2324/alert/key-not-recognized")
-mqtt_client.subscribe("vc2324/key-is-ok")
+    mqtt_client.subscribe("vc2324/radio")
+    mqtt_client.subscribe("vc2324/weather-current")
+    mqtt_client.subscribe("vc2324/weather-forecast")
+    mqtt_client.subscribe("vc2324/dms")
+    mqtt_client.subscribe("vc2324/alert/brake")
+    mqtt_client.subscribe("vc2324/alert/key-not-recognized")
+    mqtt_client.subscribe("vc2324/key-is-ok")
 
 # START LOOP
-mqtt_client.start()
-http_server.start()
-mqtt_client.stop()
-print("Program terminated!")
+    mqtt_client.start()
+    http_server.start()
+    mqtt_client.stop()
+    print("Program terminated!")
+except Exception as e:
+    raise e

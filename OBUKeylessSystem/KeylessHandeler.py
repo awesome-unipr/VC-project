@@ -3,21 +3,22 @@ import json
 import paho.mqtt.client as mqtt
 from aiohttp import web
 
-# CONFIGURATION
-with open("Config.json", "r") as file:
-    config_file = json.load(file)
+try:
+    with open("Config.json", "r") as file:
+        config_file = json.load(file)
 
-for o in config_file["Obu"]:
-    if o["name"] == "Remote Keyless System":
-        HTTP_PORT = o["http_port"]
-        CLIENT_ID = o["mqtt_id"]
-        MQTT_TOPIC = "vc2324/key-is-ok"
+    for o in config_file["Obu"]:
+        if o["name"] == "Remote Keyless System":
+            HTTP_PORT = o["http_port"]
+            CLIENT_ID = o["mqtt_id"]
+            MQTT_TOPIC = "vc2324/key-is-ok"
 
-for b in config_file["MqttBroker"]:
-    MQTT_BROKER = b["name"]
-    MQTT_IP = b["ip"]
-    MQTT_PORT = b["port"]
-
+    for b in config_file["MqttBroker"]:
+        MQTT_BROKER = b["name"]
+        MQTT_IP = b["ip"]
+        MQTT_PORT = b["port"]
+except Exception as e:
+    raise e
 USER_ONE = {
     "identity": config_file["Driver"][0]["identity"],
     "sequence": config_file["Driver"][0]["sequence"],
@@ -187,6 +188,9 @@ httpServer.router.add_post("/logout", logout_handler)
 
 
 if __name__ == "__main__":
-    mqtt_client.connect(MQTT_IP, MQTT_PORT, 60)
-    mqtt_client.loop_start()
-    web.run_app(httpServer, port=HTTP_PORT)
+    try:
+        mqtt_client.connect(MQTT_IP, MQTT_PORT, 60)
+        mqtt_client.loop_start()
+        web.run_app(httpServer, port=HTTP_PORT)
+    except Exception as e:
+        raise e

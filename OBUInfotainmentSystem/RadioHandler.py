@@ -80,29 +80,32 @@ class RadioHandler:
         return self._current_station
 
 
-# CONFIGURATION
-with open("Config.json", "r") as file:
-    config_file = json.load(file)
 
-for o in config_file["Obu"]:
-    if o["name"] == "Infotainment System":
-        http_server_port = o["http_port"]
-        client_id = o["mqtt_id"]
+try:
+    with open("Config.json", "r") as file:
+        config_file = json.load(file)
 
-for b in config_file["MqttBroker"]:
-    broker_ip = b["ip"]
-    broker_port = b["port"]
+    for o in config_file["Obu"]:
+        if o["name"] == "Infotainment System":
+            http_server_port = o["http_port"]
+            client_id = o["mqtt_id"]
+
+    for b in config_file["MqttBroker"]:
+        broker_ip = b["ip"]
+        broker_port = b["port"]
 
 # INITIALIZATION
-mqtt_client = MqttClient(broker_ip, broker_port, client_id)
-radio_handler = RadioHandler("default_station", mqtt_client)
-http_server = HttpServer(radio_handler, http_server_port)
+    mqtt_client = MqttClient(broker_ip, broker_port, client_id)
+    radio_handler = RadioHandler("default_station", mqtt_client)
+    http_server = HttpServer(radio_handler, http_server_port)
 
-mqtt_client.subscribe("vc2324/radio")
-mqtt_client.start()
+    mqtt_client.subscribe("vc2324/radio")
+    mqtt_client.start()
 
-http_server.start()
+    http_server.start()
 
-mqtt_client.stop()
+    mqtt_client.stop()
 
-print("Program terminated!")
+    print("Program terminated!")
+except Exception as e:
+    raise e
