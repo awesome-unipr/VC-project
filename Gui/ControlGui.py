@@ -104,7 +104,6 @@ class TkinterGui:
         self.tk_abs = ImageTk.PhotoImage(self.abs_icon)
         self.abscv.create_image(0, 0, image=self.tk_abs, anchor=tk.NW)
 
-
         # RIGHT FRAME
         self.right_frame = Frame(self.main_frame)
         self.right_frame.place(relx=1, relwidth=0.7, relheight=1, anchor=tk.NE)
