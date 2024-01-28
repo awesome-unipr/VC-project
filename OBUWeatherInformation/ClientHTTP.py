@@ -4,18 +4,19 @@ import asyncio
 import python_weather
 import json
 import os
+import time
 
 
 async def main():
 
-    #CONFIGURATION
-    with open('Config.json', 'r') as file:
+    # CONFIGURATION
+    with open("Config.json", "r") as file:
         config_file = json.load(file)
 
-    for o in config_file['Obu']:
-        if o['name'] == 'Weather Information':
-            http_server_port = o['http_port']
-    
+    for o in config_file["Obu"]:
+        if o["name"] == "Weather Information":
+            http_server_port = o["http_port"]
+
     async def getweather():
         async with python_weather.Client(unit=python_weather.IMPERIAL) as client:
             city = "Parma"
@@ -24,18 +25,22 @@ async def main():
             description = weather.current.description
             kind = weather.current.kind
 
-            current_parameters = {"current_city" : city, "current_temperature" : temperature , 
-                                  "current_description" : description , "current_kind" : kind}
-            print('-----')
+            current_parameters = {
+                "current_city": city,
+                "current_temperature": temperature,
+                "current_description": description,
+                "current_kind": kind,
+            }
+            print("-----")
             print(temperature)
             print(description)
             print(kind)
-            print('-----')
+            print("-----")
             return current_parameters
-        
+
     async def getforecast():
         async with python_weather.Client(unit=python_weather.IMPERIAL) as client:
-            city = 'Parma'
+            city = "Parma"
             weather = await client.get(city)
             now = datetime.datetime.now()
 
@@ -51,15 +56,15 @@ async def main():
                 now_date = now.date
 
                 number_of_forecasts = 7
-                
+
                 for hourly in forecast.hourly:
-                    
+
                     h = int(hourly.time.strftime("%H"))
-                    
+
                     now_h = int(now.time().strftime("%H"))
 
-                    if (h > now_h or  i == 1) & (ii < number_of_forecasts):
-                        #print(hourly)
+                    if (h > now_h or i == 1) & (ii < number_of_forecasts):
+                        # print(hourly)
                         print(forecast.date)
                         print(hourly.time)
                         print(hourly.temperature)
@@ -68,12 +73,23 @@ async def main():
 
                         i = 1
 
-                        date =str(forecast.date.day)+"-"+str(forecast.date.month)+"-"+str(forecast.date.year)
+                        date = (
+                            str(forecast.date.day)
+                            + "-"
+                            + str(forecast.date.month)
+                            + "-"
+                            + str(forecast.date.year)
+                        )
                         time = str(hourly.time.hour)
-                        kind = str(hourly.kind)  
-    
-                        forecast_parameters[ii] = {"date" : date, "time" : time ,"temperature" : hourly.temperature , 
-                                                   "description" : hourly.description , "kind" : kind}
+                        kind = str(hourly.kind)
+
+                        forecast_parameters[ii] = {
+                            "date": date,
+                            "time": time,
+                            "temperature": hourly.temperature,
+                            "description": hourly.description,
+                            "kind": kind,
+                        }
 
                         ii += 1
 
@@ -83,15 +99,26 @@ async def main():
     async with aiohttp.ClientSession() as session:
         wc = await getweather()
         wf = await getforecast()
-        
-        json_wf = json.dumps(wf)
-        #print(wf[0]["time"])
-        print(wf[0]['kind'])
 
-        async with session.post(url = 'http://localhost:' + str(http_server_port) + '/weathercurrent', data = wc) as response:
-            print('current weather...')
-            
-        async with session.post('http://localhost:' + str(http_server_port) + '/weatherforecast', json = json_wf) as response:
-            print('weather forecast...')
-            
-asyncio.run(main())
+        json_wf = json.dumps(wf)
+        # print(wf[0]["time"])
+        print(wf[0]["kind"])
+
+        async with session.post(
+            url="http://localhost:" + str(http_server_port) + "/weathercurrent", data=wc
+        ) as response:
+            print("current weather...")
+
+        async with session.post(
+            "http://localhost:" + str(http_server_port) + "/weatherforecast",
+            json=json_wf,
+        ) as response:
+            print("weather forecast...")
+
+
+try:
+    while True:
+        asyncio.run(main())
+        time.sleep(5 * 60)
+except Exception as e:
+    print("Error " + str(e))

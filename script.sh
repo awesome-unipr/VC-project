@@ -33,6 +33,7 @@ pip install -r "$REQUIREMENTS_PATH"
 
 # Start Python scripts in the background
 python3.11 "./OBUWeatherInformation/WeatherHandler.py" &
+python3.11 "./OBUWeatherInformation/ClientHTTP.py" &
 python3.11 "./OBUKeylessSystem/KeylessHandeler.py" &
 python3.11 "./OBUBrakingSystem/braking_handler.py" &
 python3.11 "./OBUDriverMonitoringSystem/dms_handler.py" &
