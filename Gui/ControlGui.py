@@ -587,6 +587,7 @@ class VehicleStatus:
                 text=str(self.current_weather["temperature"]) + " °F"
             )
 
+            # TODO: fix this
             self.display_w_icon(self.current_weather["weather"], self._gui.cw_cv)
 
             for i, w in enumerate(self.forecast_weather):
@@ -600,8 +601,10 @@ class VehicleStatus:
                 self.display_w_icon(
                     self.forecast_weather[w]["weather"], self._gui.fw_cv[i]
                 )
-        except:
+        except Exception as e:
             print("weather gui update error")
+            # string indices must be integers, not 'str'
+            print(e)
 
         # DMS UPDATE
         for i in self._gui.state:
