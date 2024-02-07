@@ -539,7 +539,7 @@ class VehicleStatus:
                     url="http://localhost:" + str(self.cobu_port) + "/vehicle-status"
                 ) as response:
                     status = await response.json()
-                    # print(status)
+                    print(status)
                     for o in status["Obu"]:
                         if o["name"] == "radio":
                             self.radio = o["status"]

@@ -56,6 +56,9 @@ class BrakingHandler:
 
     def key_confirmed(self):
         print("Valid key")
+        self._mqtt_client.publish(
+            "vc2324/alert/key-not-recognized", "KEY VALID"
+        )
         self._status = "operative, alert detected, braking"
 
     def key_unconfirmed(self):
