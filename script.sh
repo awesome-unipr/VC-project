@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the path to the virtual environment
-#VENV_PATH="./venv"
+VENV_PATH="./venv"
 
 # Define the path to the requirements file
 REQUIREMENTS_PATH="./requirements.txt"
@@ -12,7 +12,7 @@ cleanup() {
     # Kill all child processes of this script
     pkill -P $$
     # Deactivate the virtual environment
-    #deactivate
+    deactivate
     exit
 }
 
@@ -20,13 +20,13 @@ cleanup() {
 trap cleanup INT
 
 # Check if the virtual environment exists
-#if [ ! -d "$VENV_PATH" ]; then
+if [ ! -d "$VENV_PATH" ]; then
     # Create virtual environment
-#    python3 -m venv "$VENV_PATH"
-#fi
+   python3 -m venv "$VENV_PATH"
+fi
 
 # Activate the virtual environment
-#source "$VENV_PATH/bin/activate"
+source "$VENV_PATH/bin/activate"
 
 # Install requirements
 pip install -r "$REQUIREMENTS_PATH"
