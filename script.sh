@@ -32,13 +32,13 @@ trap cleanup INT
 pip install -r "$REQUIREMENTS_PATH"
 
 # Start Python scripts in the background
+python3.10 "./OBUCentralUnit/central_obu_handler.py" &
 python3.10 "./OBUWeatherInformation/WeatherHandler.py" &
 python3.10 "./OBUWeatherInformation/ClientHTTP.py" &
 python3.10 "./OBUKeylessSystem/KeylessHandeler.py" &
 python3.10 "./OBUBrakingSystem/braking_handler.py" &
 python3.10 "./OBUDriverMonitoringSystem/dms_handler.py" &
 python3.10 "./OBUInfotainmentSystem/RadioHandler.py" &
-python3.10 "./OBUCentralUnit/central_obu_handler.py" &
 python3.10 "./Gui/ControlGui.py" &
 
 # Wait for all background jobs to finish
